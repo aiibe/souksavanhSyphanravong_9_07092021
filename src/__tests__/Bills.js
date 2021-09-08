@@ -1,6 +1,9 @@
 import { screen } from "@testing-library/dom";
+import userEvent from "@testing-library/user-event";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
+import Bills from "../containers/Bills.js";
+import { ROUTES_PATH } from "../constants/routes.js";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -39,6 +42,28 @@ describe("Given I am connected as an employee", () => {
         document.body.innerHTML = html;
         const hasError = screen.getAllByText("Erreur");
         expect(hasError).toBeTruthy();
+      });
+    });
+
+    describe("I click on new bill button", () => {
+      test("Then handleClickNewBill should be called", () => {
+        const html = BillsUI({ data: [] });
+        document.body.innerHTML = html;
+
+        const bills = new Bills({
+          document,
+          onNavigate: () => ROUTES_PATH["NewBill"],
+          localStorage: null,
+          firestore: null,
+        });
+        const clickNewBill = jest.fn(bills.handleClickNewBill);
+
+        const newBillButton = screen.getByTestId("btn-new-bill");
+        newBillButton.addEventListener("click", clickNewBill);
+
+        userEvent.click(newBillButton);
+
+        expect(clickNewBill).toBeCalled();
       });
     });
   });
