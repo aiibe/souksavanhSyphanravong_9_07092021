@@ -1,5 +1,6 @@
 import { screen } from "@testing-library/dom";
 import userEvent from "@testing-library/user-event";
+
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import Bills from "../containers/Bills.js";
@@ -8,11 +9,6 @@ import { ROUTES_PATH } from "../constants/routes.js";
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
     describe("Data is ready", () => {
-      test("Then bill icon in vertical layout should be highlighted", () => {
-        const html = BillsUI({ data: [] });
-        document.body.innerHTML = html;
-        //to-do write expect expression
-      });
       test("Then bills should be ordered from earliest to latest", () => {
         const html = BillsUI({ data: bills });
         document.body.innerHTML = html;
@@ -50,20 +46,44 @@ describe("Given I am connected as an employee", () => {
         const html = BillsUI({ data: [] });
         document.body.innerHTML = html;
 
-        const bills = new Bills({
+        const billsContainer = new Bills({
           document,
           onNavigate: () => ROUTES_PATH["NewBill"],
           localStorage: null,
           firestore: null,
         });
-        const clickNewBill = jest.fn(bills.handleClickNewBill);
 
+        const clickNewBill = jest.fn(billsContainer.handleClickNewBill);
         const newBillButton = screen.getByTestId("btn-new-bill");
         newBillButton.addEventListener("click", clickNewBill);
-
         userEvent.click(newBillButton);
 
-        expect(clickNewBill).toBeCalled();
+        expect(clickNewBill).toHaveBeenCalled();
+      });
+    });
+
+    describe("I click on first eye icon", () => {
+      test("Then handleClickIconEye should be called", () => {
+        const html = BillsUI({ data: bills });
+        document.body.innerHTML = html;
+
+        const billsContainer = new Bills({
+          document,
+          onNavigate: () => ROUTES_PATH["NewBill"],
+          localStorage: null,
+          firestore: null,
+        });
+
+        $.fn.modal = jest.fn();
+        const firstEyeIcon = screen.getAllByTestId("icon-eye")[0];
+        const clickIconEye = jest.fn(
+          billsContainer.handleClickIconEye(firstEyeIcon)
+        );
+        firstEyeIcon.addEventListener("click", clickIconEye);
+        userEvent.click(firstEyeIcon);
+
+        expect($.fn.modal).toHaveBeenCalled();
+        expect(clickIconEye).toHaveBeenCalled();
       });
     });
   });
