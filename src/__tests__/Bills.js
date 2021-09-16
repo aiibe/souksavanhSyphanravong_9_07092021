@@ -5,6 +5,7 @@ import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import Bills from "../containers/Bills.js";
 import { ROUTES_PATH } from "../constants/routes.js";
+import firebase from "../__mocks__/firebase";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
@@ -85,6 +86,36 @@ describe("Given I am connected as an employee", () => {
         expect($.fn.modal).toHaveBeenCalled();
         expect(clickIconEye).toHaveBeenCalled();
       });
+    });
+  });
+});
+
+// test d'intégration GET
+describe("Given I am a user connected as Employee", () => {
+  describe("When I navigate to Bills page", () => {
+    test("fetches bills from mock API GET", async () => {
+      const getSpy = jest.spyOn(firebase, "get");
+      const bills = await firebase.get();
+      expect(getSpy).toHaveBeenCalledTimes(1);
+      expect(bills.data.length).toBe(4);
+    });
+    test("fetches bills from an API and fails with 404 message error", async () => {
+      firebase.get.mockImplementationOnce(() =>
+        Promise.reject(new Error("Erreur 404"))
+      );
+      const html = BillsUI({ error: "Erreur 404" });
+      document.body.innerHTML = html;
+      const message = await screen.getByText(/Erreur 404/);
+      expect(message).toBeTruthy();
+    });
+    test("fetches messages from an API and fails with 500 message error", async () => {
+      firebase.get.mockImplementationOnce(() =>
+        Promise.reject(new Error("Erreur 500"))
+      );
+      const html = BillsUI({ error: "Erreur 500" });
+      document.body.innerHTML = html;
+      const message = await screen.getByText(/Erreur 500/);
+      expect(message).toBeTruthy();
     });
   });
 });
