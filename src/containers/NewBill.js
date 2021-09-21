@@ -24,7 +24,7 @@ export default class NewBill {
     const fileExtension = fileName.split(".").pop();
 
     const formats = ["jpg", "jpeg", "png"];
-    if (formats.includes[fileExtension])
+    if (formats.includes(fileExtension))
       /* istanbul ignore next */
       this.firestore.storage
         .ref(`justificatifs/${fileName}`)

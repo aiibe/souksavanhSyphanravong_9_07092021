@@ -51,11 +51,12 @@ describe("Given I am connected as an Employee", () => {
         );
 
         expect(changeFile).toHaveBeenCalled();
-        expect(fileInput.files.length).toEqual(1);
-        expect(fileInput.files[0].name).toEqual("hello.png");
+        expect(fileInput.files.length).toBe(1);
+        expect(fileInput.files[0].name).toBe("hello.png");
       });
     });
 
+    // test d'integration
     describe("And I submit the form with valid data", () => {
       test("Then my bill should be created", () => {
         document.body.innerHTML = NewBillUI();
@@ -100,6 +101,7 @@ describe("Given I am connected as an Employee", () => {
         userEvent.click(screen.getByRole("button"));
 
         expect(submitBill).toHaveBeenCalled();
+        expect(newBill.createBill).toHaveBeenCalled();
       });
     });
   });
