@@ -50,7 +50,7 @@ export default class NewBill {
         e.target.querySelector(`input[data-testid="amount"]`).value
       ),
       date: e.target.querySelector(`input[data-testid="datepicker"]`).value,
-      vat: e.target.querySelector(`input[data-testid="vat"]`).value,
+      vat: parseInt(e.target.querySelector(`input[data-testid="vat"]`).value),
       pct:
         parseInt(e.target.querySelector(`input[data-testid="pct"]`).value) ||
         20,

@@ -9,7 +9,7 @@ import firebase from "../__mocks__/firebase";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
-    describe("Data is ready", () => {
+    describe("And data has been fetched with success", () => {
       test("Then bills should be ordered from earliest to latest", () => {
         const html = BillsUI({ data: bills });
         document.body.innerHTML = html;
@@ -24,7 +24,7 @@ describe("Given I am connected as an employee", () => {
       });
     });
 
-    describe("Waiting for data", () => {
+    describe("And while data is loading", () => {
       test("Then Loading page should appears", () => {
         const html = BillsUI({ data: [], loading: true });
         document.body.innerHTML = html;
@@ -33,7 +33,7 @@ describe("Given I am connected as an employee", () => {
       });
     });
 
-    describe("Got an error fetching data", () => {
+    describe("And failed to fetch data", () => {
       test("Then Error page should appears", () => {
         const html = BillsUI({ data: [], error: true });
         document.body.innerHTML = html;
@@ -42,8 +42,8 @@ describe("Given I am connected as an employee", () => {
       });
     });
 
-    describe("I click on new bill button", () => {
-      test("Then handleClickNewBill should be called", () => {
+    describe("And I click on new bill button", () => {
+      test("Then its handler should be called", () => {
         const html = BillsUI({ data: [] });
         document.body.innerHTML = html;
 
@@ -63,8 +63,8 @@ describe("Given I am connected as an employee", () => {
       });
     });
 
-    describe("I click on first eye icon", () => {
-      test("Then handleClickIconEye should be called", () => {
+    describe("And I click on first eye icon", () => {
+      test("Then modal should open", () => {
         const html = BillsUI({ data: bills });
         document.body.innerHTML = html;
 
