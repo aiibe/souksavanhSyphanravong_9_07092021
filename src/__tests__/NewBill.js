@@ -81,17 +81,15 @@ describe("Given I am connected as an Employee", () => {
           localStorage: window.localStorage,
         });
 
-        newBill.handleSubmit = jest.fn();
+        const onSubmit = jest.fn(newBill.handleSubmit);
         newBill.createBill = jest.fn();
 
         const form = screen.getByTestId("form-new-bill");
-        form.addEventListener("submit", newBill.handleSubmit);
+        form.addEventListener("submit", onSubmit);
 
-        const sendButton = screen.getByRole("button");
+        userEvent.click(screen.getByRole("button"));
 
-        userEvent.click(sendButton);
-
-        expect(newBill.handleSubmit).toBeCalled();
+        expect(onSubmit).toHaveBeenCalled();
       });
     });
 
