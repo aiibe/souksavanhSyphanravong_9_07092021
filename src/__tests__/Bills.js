@@ -6,9 +6,45 @@ import { bills } from "../fixtures/bills.js";
 import Bills from "../containers/Bills.js";
 import { ROUTES_PATH } from "../constants/routes.js";
 import firebase from "../__mocks__/firebase";
+import { localStorageMock } from "../__mocks__/localStorage.js";
+import Router from "../app/Router";
+import firestore from "../app/Firestore";
 
 describe("Given I am connected as an employee", () => {
   describe("When I am on Bills Page", () => {
+    test("Then bill icon in vertical layout should be highlighted", async () => {
+      jest.mock("../app/Firestore");
+      firestore.bills = () => ({
+        get: jest.fn().mockResolvedValue(),
+      });
+
+      Object.defineProperty(window, "localStorage", {
+        value: localStorageMock,
+      });
+      window.localStorage.setItem(
+        "user",
+        JSON.stringify({
+          type: "Employee",
+        })
+      );
+      Object.defineProperty(window, "location", {
+        value: {
+          pathname: "/",
+          hash: "#employee/bills",
+        },
+      });
+
+      document.body.innerHTML = `<div id="root"></div>`;
+      Router();
+
+      expect(
+        screen.getByTestId("icon-window").classList.contains("active-icon")
+      ).toBeTruthy();
+      expect(
+        screen.getByTestId("icon-mail").classList.contains("active-icon")
+      ).not.toBeTruthy();
+    });
+
     describe("And data has been fetched with success", () => {
       test("Then bills should be ordered from earliest to latest", () => {
         const html = BillsUI({ data: bills });
