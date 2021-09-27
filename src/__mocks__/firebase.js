@@ -1,5 +1,3 @@
-import firebase from "./firebase";
-
 const data = [
   {
     id: "47qAXb6fIm2zOKkLzMro",
