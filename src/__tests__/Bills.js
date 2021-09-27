@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 import BillsUI from "../views/BillsUI.js";
 import { bills } from "../fixtures/bills.js";
 import Bills from "../containers/Bills.js";
-import { ROUTES_PATH } from "../constants/routes.js";
+import { ROUTES } from "../constants/routes.js";
 import firebase from "../__mocks__/firebase";
 import { localStorageMock } from "../__mocks__/localStorage.js";
 import Router from "../app/Router";
@@ -79,18 +79,24 @@ describe("Given I am connected as an employee", () => {
     });
 
     describe("And I click on new bill button", () => {
-      test("Then its handler should be called", () => {
+      test("Then I should be redirected to New Bill page", () => {
         const html = BillsUI({ data: [] });
         document.body.innerHTML = html;
 
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+
         const billsContainer = new Bills({
           document,
-          onNavigate: () => ROUTES_PATH["NewBill"],
+          onNavigate,
           localStorage: null,
           firestore: null,
         });
 
-        const clickNewBill = jest.fn(billsContainer.handleClickNewBill);
+        const clickNewBill = jest.fn((e) =>
+          billsContainer.handleClickNewBill(e)
+        );
         const newBillButton = screen.getByTestId("btn-new-bill");
         newBillButton.addEventListener("click", clickNewBill);
         userEvent.click(newBillButton);
@@ -104,9 +110,13 @@ describe("Given I am connected as an employee", () => {
         const html = BillsUI({ data: bills });
         document.body.innerHTML = html;
 
+        const onNavigate = (pathname) => {
+          document.body.innerHTML = ROUTES({ pathname });
+        };
+
         const billsContainer = new Bills({
           document,
-          onNavigate: () => ROUTES_PATH["NewBill"],
+          onNavigate,
           localStorage: null,
           firestore: null,
         });
