@@ -58,41 +58,6 @@ describe("Given I am connected as an Employee", () => {
       });
     });
 
-    describe("And I click send button", () => {
-      test("Then the form submit handler should be invoked", () => {
-        document.body.innerHTML = NewBillUI();
-
-        Object.defineProperty(window, "localStorage", {
-          value: localStorageMock,
-        });
-
-        window.localStorage.setItem(
-          "user",
-          JSON.stringify({
-            type: "Employee",
-            email: "johndoe@email.com",
-          })
-        );
-
-        const newBill = new NewBill({
-          document,
-          onNavigate: () => {},
-          firestore,
-          localStorage: window.localStorage,
-        });
-
-        const onSubmit = jest.fn(newBill.handleSubmit);
-        newBill.createBill = jest.fn();
-
-        const form = screen.getByTestId("form-new-bill");
-        form.addEventListener("submit", onSubmit);
-
-        userEvent.click(screen.getByRole("button"));
-
-        expect(onSubmit).toHaveBeenCalled();
-      });
-    });
-
     describe("And I submit the form with valid data", () => {
       test("Then my bill should be created", () => {
         document.body.innerHTML = NewBillUI();
@@ -116,8 +81,6 @@ describe("Given I am connected as an Employee", () => {
           localStorage: window.localStorage,
         });
 
-        newBill.createBill = jest.fn();
-
         const validBill = {
           type: "Equipement et matériel",
           name: "Souris Logitech",
@@ -140,11 +103,15 @@ describe("Given I am connected as an Employee", () => {
         newBill.fileName = validBill.fileName;
         newBill.fileUrl = validBill.fileUrl;
 
+        newBill.createBill = jest.fn();
+        const onSubmit = jest.fn(newBill.handleSubmit);
+
         const form = screen.getByTestId("form-new-bill");
-        form.addEventListener("submit", newBill.handleSubmit);
+        form.addEventListener("submit", onSubmit);
 
         userEvent.click(screen.getByRole("button"));
 
+        expect(onSubmit).toHaveBeenCalled();
         expect(newBill.createBill).toHaveBeenCalledWith({
           ...validBill,
           status: "pending",

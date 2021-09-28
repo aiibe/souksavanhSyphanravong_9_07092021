@@ -102,6 +102,7 @@ describe("Given I am connected as an employee", () => {
         userEvent.click(newBillButton);
 
         expect(clickNewBill).toHaveBeenCalled();
+        expect(screen.getAllByText("Envoyer une note de frais")).toBeTruthy();
       });
     });
 
